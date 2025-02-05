@@ -158,6 +158,115 @@ const deleteUser = async (req, res, next) => {
   }
 };
 
+// Get all agents
+const getAllAgents = async (req, res, next) => {
+  try {
+    const agents = await User.find({ role: 'agent' })
+      .select('-password -refreshToken')
+      .sort('name');
+
+    res.status(200).json({
+      success: true,
+      count: agents.length,
+      data: agents
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+// Create agent
+const createAgent = async (req, res, next) => {
+  try {
+    const existingUser = await User.findOne({ email: req.body.email });
+    if (existingUser) {
+      return next(createCustomError('Email already registered', 400));
+    }
+
+    req.body.role = 'agent';
+    const agent = await User.create(req.body);
+
+    const agentResponse = agent.toObject();
+    delete agentResponse.password;
+    delete agentResponse.refreshToken;
+
+    res.status(201).json({
+      success: true,
+      data: agentResponse
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+// Get single agent
+const getAgent = async (req, res, next) => {
+  try {
+    const agent = await User.findById(req.params.id)
+      .select('-password -refreshToken');
+
+    if (!agent || agent.role !== 'agent') {
+      return next(createCustomError(`No agent found with id: ${req.params.id}`, 404));
+    }
+
+    res.status(200).json({
+      success: true,
+      data: agent
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+// Update agent
+const updateAgent = async (req, res, next) => {
+  try {
+    if (req.body.password) {
+      delete req.body.password;
+    }
+
+    const agent = await User.findByIdAndUpdate(
+      req.params.id,
+      req.body,
+      {
+        new: true,
+        runValidators: true
+      }
+    ).select('-password -refreshToken');
+
+    if (!agent || agent.role !== 'agent') {
+      return next(createCustomError(`No agent found with id: ${req.params.id}`, 404));
+    }
+
+    res.status(200).json({
+      success: true,
+      data: agent
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+// Delete agent
+const deleteAgent = async (req, res, next) => {
+  try {
+    const agent = await User.findById(req.params.id);
+
+    if (!agent || agent.role !== 'agent') {
+      return next(createCustomError(`No agent found with id: ${req.params.id}`, 404));
+    }
+
+    await agent.remove();
+
+    res.status(200).json({
+      success: true,
+      message: 'Agent deleted successfully'
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
 module.exports = {
   getAllUsers,
   getUser,
@@ -165,5 +274,10 @@ module.exports = {
   updateUserProfile,
   createUser,
   updateUser,
-  deleteUser
+  deleteUser,
+  getAllAgents,
+  createAgent,
+  getAgent,
+  updateAgent,
+  deleteAgent
 };

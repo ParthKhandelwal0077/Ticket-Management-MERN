@@ -1,9 +1,9 @@
 import { useSelector } from 'react-redux';
 import UserDashboard from './UserDashboard';
 // import AgentDashboard from './AgentDashboard';
-// import AdminDashboard from './AdminDashboard';
+import AdminDashboard from './AdminDashboard';
 import PulseLoader from 'react-spinners/PulseLoader';
-
+import HomeHeader from '../HomeHeader'; 
 const Dashboard = () => {
   const { user } = useSelector((state) => state.auth);
 
@@ -17,13 +17,14 @@ const Dashboard = () => {
 
   return (
     <div className="container mx-auto px-4 py-8">
+      <HomeHeader />
       <h1 className="text-3xl font-bold mb-8">Dashboard</h1>
 
       {/* Render dashboard based on user role */}
       
       {user.role === 'user' && <UserDashboard />}
       {/* {user.role === 'agent' && <AgentDashboard />} */}
-      {/* {user.role === 'admin' && <AdminDashboard />} */}
+      {user.role === 'admin' && <AdminDashboard />}
     </div>
   );
 };

@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types';
 import { format } from 'date-fns';
-import { useUpdateUserMutation, useDeleteUserMutation } from '../users/usersApiSlice';
+import { useUpdateUserMutation, useDeleteUserMutation } from '../user/userApiSlice';
 
 const UserList = ({ users, showControls = false }) => {
   const [updateUser] = useUpdateUserMutation();

@@ -5,9 +5,13 @@ const {
   getUser,
   getUserProfile,
   updateUserProfile,
-  createUser,
   updateUser,
-  deleteUser
+  deleteUser,
+  getAllAgents,
+  createAgent,
+  getAgent,
+  updateAgent,
+  deleteAgent
 } = require('../controllers/userController');               
 
 const { 
@@ -61,14 +65,24 @@ router.route('/agent/tickets/open')
 
 // Admin only routes - requires admin role
 router.use(authorize('admin'));
-
-router.route('/')
+router.route('/admin/tickets/all')
+  .get(getAllTickets);
+router.route('/admin/tickets/:id')
+    .get(getTicketById)
+    .patch(updateTicket);
+router.route('/admin/users')
   .get(getAllUsers)
-  .post(createUser);
-
-router.route('/:id')
+router.route('/admin/users/:id')
   .get(getUser)
   .put(updateUser)
   .delete(deleteUser);
-
+router.route('/admin/users/:id/tickets')
+  .get(getUserTickets);
+router.route('/admin/agents')
+  .get(getAllAgents)
+  .post(createAgent);
+router.route('/admin/agents/:id')
+  .get(getAgent)
+  .put(updateAgent)
+  .delete(deleteAgent);
 module.exports = router;

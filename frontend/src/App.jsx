@@ -9,6 +9,7 @@ import Dashboard from './components/Dashboard/Dashboard'
 import Profile from './features/user/Profile'
 import Ticket from './features/tickets/Ticket'
 import EditProfile from './features/user/EditProfile'
+import UserProfile from './features/admin/UserProfile'
 
 // Define roles for route protection
 const ROLES = {
@@ -20,8 +21,8 @@ const ROLES = {
 function App() {
   return (
     <Routes>
-      {/* Public Routes */}
       <Route path="/" element={<Layout />}>
+        {/* Public Routes */}
         <Route index element={<Welcome />} />
         <Route path="auth">
           <Route path="loginUser" element={<Login />} />
@@ -29,19 +30,17 @@ function App() {
         </Route>
 
         {/* Protected Routes */}
-    
-      <Route element={<PersistLogin />}>
-          <Route path='/' element={<Layout />}>
+        <Route element={<PersistLogin />}>
           {/* User Routes - accessible by all authenticated users */}
           <Route element={<RequireAuth allowedRoles={[ROLES.User, ROLES.Agent, ROLES.Admin]} />}>
-          <Route path="dashboard" element={<Dashboard/ >}/>
+            <Route path="dashboard" element={<Dashboard />} />
             <Route path="profile" element={<Profile />} />
             <Route path="editProfile" element={<EditProfile />} />
             <Route path="tickets/:ticketId" element={<Ticket />} />
           </Route>
 
           {/* Agent Routes */}
-          <Route element={<RequireAuth allowedRoles={[ROLES.Agent, ROLES.Admin]} />}>
+          {/* <Route element={<RequireAuth allowedRoles={[ROLES.Agent, ROLES.Admin]} />}>
             <Route path="tickets">
               <Route path="assigned" element={<Dashboard />} />
               <Route path="all" element={<Dashboard />} />
@@ -51,23 +50,22 @@ function App() {
               <Route path="create" element={<Dashboard />} />
               <Route path="edit/:id" element={<Dashboard />} />
             </Route>
-          </Route>
+          </Route> */}
 
           {/* Admin Routes */}
           <Route element={<RequireAuth allowedRoles={[ROLES.Admin]} />}>
             <Route path="admin">
               <Route path="users" element={<Dashboard />} />
+              <Route path="users/:userId" element={<UserProfile />} />
               <Route path="tickets/escalated" element={<Dashboard />} />
               <Route path="system" element={<Dashboard />} />
             </Route>
           </Route>
-          </Route>
-          </Route>
         </Route>
-   
-        {/* Catch all - 404 */}
 
-   
+        {/* Catch all - 404 */}
+        <Route path="*" element={<div>404 Not Found</div>} />
+      </Route>
     </Routes>
   )
 }

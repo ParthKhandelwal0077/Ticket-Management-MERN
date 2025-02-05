@@ -13,48 +13,47 @@ export const userApiSlice = apiSlice.injectEndpoints({
         body: userData
       }),
       invalidatesTags: ['Profile']
-    }),getAllUsers: builder.query({
-        query: () => '/users',
-        providesTags: ['Users']
+    }),
+    getAllUsers: builder.query({
+      query: () => 'users/admin/users',
+      providesTags: ['Users']
+    }),
+    getUser: builder.query({
+      query: (id) => `users/admin/users/${id}`,
+      providesTags: ['Users']
+    }),
+    createUser: builder.mutation({
+      query: (userData) => ({
+        url: 'users/admin/agents',
+        method: 'POST',
+        body: userData
       }),
-      getUser: builder.query({
-        query: (id) => `/users/${id}`,
-        providesTags: ['Users']
+      invalidatesTags: ['Users']
+    }),
+    updateUser: builder.mutation({
+      query: ({ id, ...userData }) => ({
+        url: `users/admin/agents/${id}`,
+        method: 'PUT',
+        body: userData
       }),
-      createUser: builder.mutation({
-        query: (userData) => ({
-          url: '/users',
-          method: 'POST',
-          body: userData
-        }),
-        invalidatesTags: ['Users']
+      invalidatesTags: ['Users']
+    }),
+    deleteUser: builder.mutation({
+      query: (id) => ({
+        url: `users/admin/agents/${id}`,
+        method: 'DELETE'
       }),
-      updateUser: builder.mutation({
-        query: ({ id, ...userData }) => ({
-          url: `/users/${id}`,
-          method: 'PUT',
-          body: userData
-        }),
-        invalidatesTags: ['Users']
-      }),
-      deleteUser: builder.mutation({
-        query: (id) => ({
-          url: `/users/${id}`,
-          method: 'DELETE'
-        }),
-        invalidatesTags: ['Users']
-      })
-
+      invalidatesTags: ['Users']
+    })
   })
 })
 
 export const {
   useGetProfileQuery,
   useUpdateProfileMutation,
-
+  useGetAllUsersQuery,
   useGetUserQuery,
   useCreateUserMutation,
   useUpdateUserMutation,
   useDeleteUserMutation,
- 
 } = userApiSlice
